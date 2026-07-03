@@ -1,0 +1,7 @@
+/**
+ * CSS custom properties.
+ *
+ * Используй CSS variables вместо SCSS-переменных.
+ * Пример: :root { --color-brand: #ff0000; }
+ *          .btn { color: var(--color-brand); }
+ */

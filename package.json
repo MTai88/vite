@@ -1,0 +1,46 @@
+{
+  "name": "vite-base",
+  "version": "1.0.0",
+  "description": "Modern Vite 6 base for Bitrix / Bitrix24 projects (TypeScript + Vue 3, esbuild + PostCSS/Tailwind, ESLint)",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20",
+    "npm": ">=10"
+  },
+  "browserslist": [
+    "> 0.5%",
+    "last 2 versions",
+    "Firefox ESR",
+    "not dead",
+    "not IE 11"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "watch": "vite build --watch",
+    "preview": "vite preview --port 3000",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "autoprefixer": "^10.5.2",
+    "cssnano": "^8.0.2",
+    "eslint": "^9.19.0",
+    "eslint-plugin-vue": "^9.32.0",
+    "postcss": "^8.5.16",
+    "postcss-import": "^16.1.1",
+    "postcss-nested": "^7.0.2",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.23.0",
+    "vite": "^6.0.0",
+    "vue": "^3.5.13",
+    "vue-eslint-parser": "^9.4.3"
+  },
+  "allowScripts": {
+    "esbuild@0.24.0": true
+  }
+}

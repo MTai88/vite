@@ -1,0 +1,57 @@
+# GitLab CI: lint + build.
+#
+# Эквивалент .github/workflows/test.yml для GitLab.
+# Запускается на каждом push и merge request.
+# Кеширует node_modules и подключается к npm registry с allow-scripts.
+#
+# Использование:
+#   1) положи .gitlab-ci.yml в корень проекта
+#   2) в GitLab → Settings → CI/CD → Variables добавь NPM_CONFIG_ALLOW_SCRIPTS=esbuild
+#      (или одобри postinstall через UI репозитория)
+#   3) merge request → проверка автоматом; pipeline badge можно встроить в README
+image: node:20-alpine
+
+stages:
+  - test
+
+variables:
+  # npm 11+ блокирует postinstall — здесь одобряем esbuild (идёт в составе vite).
+  # Можно через .npmrc, но проще через env.
+  npm_config_allow_scripts: 'esbuild'
+
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - node_modules/
+
+.install: &install
+  - npm ci
+
+lint:
+  stage: test
+  image: node:20-alpine
+  before_script:
+    - *install
+  script:
+    - npm run lint
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+
+build:
+  stage: test
+  image: node:20-alpine
+  before_script:
+    - *install
+  script:
+    - npm run build
+  artifacts:
+    name: dist-$CI_COMMIT_SHORT_SHA
+    expire_in: 1 week
+    paths:
+      - dist/
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'

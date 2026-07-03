@@ -1,0 +1,63 @@
+/**
+ * Корневой CSS-файл. Импортится в src/index.ts.
+ *
+ * Pipeline:
+ *   import '...variables'   → src/scss/variables.css  (CSS custom properties)
+ *   import '...mixins'      → src/scss/mixins.css     (заготовка для утилит)
+ *   import '...tailwind'    → src/scss/tailwind.css   (@tailwind директивы → JIT)
+ *   ↓
+ *   postcss-import → tailwindcss → postcss-nested → autoprefixer → (cssnano in prod)
+ */
+
+@import './variables.css';
+@import './mixins.css';
+@import './tailwind.css';
+
+/* ============================================================
+ * Базовый reset.
+ * Tailwind preflight отключён в tailwind.config.js
+ * (corePlugins.preflight: false) — чтобы не дублировать ресет.
+ * ============================================================ */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}

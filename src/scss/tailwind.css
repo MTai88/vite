@@ -1,0 +1,14 @@
+/**
+ * Tailwind CSS директивы.
+ *
+ * - base:    базовые стили (отключён preflight в tailwind.config.js,
+ *            потому что у нас свой reset в main.css)
+ * - components: переиспользуемые компоненты из плагинов (@apply)
+ * - utilities: утилитарные классы (tw-flex, tw-bg-blue-500 и т.п.)
+ *
+ * Tailwind JIT компилирует только те классы, что реально встречаются
+ * в content globs из tailwind.config.js.
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
