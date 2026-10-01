@@ -7,6 +7,13 @@
  *   import '...tailwind'    → src/scss/tailwind.css   (@tailwind директивы → JIT)
  *   ↓
  *   postcss-import → tailwindcss → postcss-nested → autoprefixer → (cssnano in prod)
+ *
+ * ВАЖНО: reset скоупится на .app-root (класс корневого div в index.html).
+ * Глобальный reset по тегам (body, a, img...) нельзя отдавать на страницу
+ * Bitrix — бандл подключается внутри шаблона портала, и такой reset сносит
+ * его стили (типографика body, ссылки, отступы). Для встраивания в Bitrix
+ * либо оставляйте скоуп .app-root, либо уберите reset совсем и изолируйте
+ * стили scoped-стилями SFC-компонентов.
  */
 
 @import './variables.css';
@@ -14,14 +21,14 @@
 @import './tailwind.css';
 
 /* ============================================================
- * Базовый reset.
- * Tailwind preflight отключён в tailwind.config.js
- * (corePlugins.preflight: false) — чтобы не дублировать ресет.
+ * Reset (scoped на .app-root — корневой контейнер приложения).
+ * Tailwind preflight отключён в tailwind.config.js — не дублируем.
  * ============================================================ */
 
-*,
-*::before,
-*::after {
+.app-root,
+.app-root *,
+.app-root *::before,
+.app-root *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -33,31 +40,31 @@ html {
   text-size-adjust: 100%;
 }
 
-body {
+.app-root {
   min-height: 100vh;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-img,
-picture,
-video,
-canvas,
-svg {
+.app-root img,
+.app-root picture,
+.app-root video,
+.app-root canvas,
+.app-root svg {
   display: block;
   max-width: 100%;
 }
 
-input,
-button,
-textarea,
-select {
+.app-root input,
+.app-root button,
+.app-root textarea,
+.app-root select {
   font: inherit;
   color: inherit;
 }
 
-a {
+.app-root a {
   color: inherit;
   text-decoration: none;
 }

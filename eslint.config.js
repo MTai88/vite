@@ -1,29 +1,25 @@
 /**
- * ESLint flat config (ESLint 9+).
+ * ESLint flat config (ESLint 9+, ESM — под "type": "module" в package.json;
+ * require()-вариант в ESM-пакете падает «module is not defined»).
  *
  * Раньше был legacy `.eslintrc` (JSON), переехали на flat — это обязательное
- * направление в ESLint 10+. Конфиг в `eslint.config.js` — JavaScript-файл,
- * импорты через require() (CommonJS), чтобы не тянуть "type": "module"
- * в package.json (это сломало бы webpack.common.js и прочее).
+ * направление в ESLint 10+.
  *
  * Состав:
  *   1) js.configs.recommended               — базовые JS-правила
- *   2) typescript-eslint recommended        — TS-специфика (no-undef, no-floating-promises...)
- *   3) eslint-plugin-vue flat/recommended  — Vue 3 правила для .vue SFC
- *   4) parser override: в .vue файлах — vue-eslint-parser + внутри него typescript-eslint
+ *   2) typescript-eslint recommended        — TS-специфика
+ *   3) eslint-plugin-vue flat/recommended   — Vue 3 правила для .vue SFC
+ *   4) parser override: в .vue — vue-eslint-parser, внутри — tseslint.parser
  *
  * ignores — это первый конфиг; ESLint применяет его ко всем file matching'ам.
  * Здесь dist/, node_modules/, coverage/.
  */
-const js = require('@eslint/js');
-const tseslint = require('typescript-eslint');
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import vue from 'eslint-plugin-vue';
+import vueParser from 'vue-eslint-parser';
 
-// eslint-plugin-vue в CommonJS экспортирует плагин через default.
-// Подстраховка — на случай если в будущей версии поменяется формат.
-const vue = require('eslint-plugin-vue').default || require('eslint-plugin-vue');
-const vueParser = require('vue-eslint-parser');
-
-module.exports = [
+export default [
   // ── Global ignores ────────────────────────────────────────────────────────
   {
     ignores: [

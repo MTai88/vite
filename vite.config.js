@@ -56,14 +56,15 @@ export default defineConfig(({ mode }) => {
           const manifest = {};
           for (const [fileName, chunk] of Object.entries(bundle)) {
             if (fileName.endsWith('.map')) continue;
-            // entry chunk → "main.<ext>": "<rel-path>"
-            if (chunk.type === 'chunk' && chunk.isEntry) {
-              const ext = fileName.endsWith('.css') ? 'css' : 'js';
-              manifest[`main.${ext}`] = fileName;
-            }
-            if (chunk.type === 'asset' && fileName.endsWith('.css')) {
-              // CSS-ассеты, сгенерированные из импортов в JS-чанке
-              manifest[`main.css`] = manifest[`main.css`] || fileName;
+            if (chunk.type === 'chunk') {
+              // entry chunk → "main.js", остальные чанки → "<name>.js".
+              // vendor.js в манифесте нужен Bitrix для <link rel=modulepreload>
+              manifest[chunk.isEntry ? 'main.js' : `${chunk.name}.js`] = fileName;
+            } else if (chunk.type === 'asset' && fileName.endsWith('.css')) {
+              // CSS-ассеты: assets/<name>.<hash>.css; entry ("index") = main.css,
+              // остальные (например vendor.css, если vendor всё же забрал CSS) — по имени
+              const base = path.basename(fileName).split('.')[0];
+              manifest[base === 'index' ? 'main.css' : `${base}.css`] = fileName;
             }
           }
           this.emitFile({
@@ -123,7 +124,12 @@ export default defineConfig(({ mode }) => {
           },
           // vendor chunk — аналог splitChunks: { vendor: { test: /node_modules/ } }
           manualChunks(id) {
-            if (id.includes('node_modules')) return 'vendor';
+            // CSS из node_modules не должен попадать в vendor-чанк: css-ассет
+            // vendor не попадает в manifest как main.css и легко теряется при
+            // подключении; пусть стили едут в css входного чанка
+            if (id.includes('node_modules') && !/\.(css|scss|sass|less|styl)(\?|$)/.test(id)) {
+              return 'vendor';
+            }
           },
         },
       },
